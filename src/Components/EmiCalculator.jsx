@@ -11,9 +11,32 @@ function EmiCalculator() {
     if (!cost) return;
     const dp = Number(e.target.value);
     setDownpayment(dp.toFixed(0));
+    //calculate emi and update it
+    const emi = calculateEmi(dp);
+    setEmi(emi);
   }
-  function updateDownPayment() {}
-  function calculateEmi() {}
+  function updateDownPayment(e) {
+    if (!cost) return;
+    const emi = Number(e.target.value);
+    setEmi(emi.toFixed(0));
+    //calculate dp and update it
+    const dp = calculateDp(emi);
+    setDownpayment(dp);
+  }
+  function calculateEmi(downPayment) {
+    // emiAmt [P x R x (1+R)^N]/[(1+R)^N-1]
+    if (!cost) return;
+    const loanAmt = cost - downPayment;
+    const rateOfInterset = interest / 100;
+    const numOfYears = tenure / 12;
+    const EMI =
+      (loanAmt * rateOfInterset * (1 + rateOfInterset) ** numOfYears) /
+      (1 + rateOfInterset) ** (numOfYears - 1);
+    return Number(EMI / 12).toFixed(0);
+  }
+  function calculateDp(emi) {
+    if (!cost) return;
+  }
   return (
     <div className="mainClass">
       <span className="title">EMI Calculator</span>
@@ -70,7 +93,7 @@ function EmiCalculator() {
         />
         <div className="labels">
           <label>{calculateEmi(cost)}</label>
-          <b>{downPayment}</b>
+          <b>{emi}</b>
           <label>{calculateEmi(0)}</label>
         </div>
       </div>
